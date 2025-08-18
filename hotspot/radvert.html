@@ -1,40 +1,59 @@
-<html>
-<head>
-<meta http-equiv="refresh" content="2; url=$(link-orig)">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />   
-<meta http-equiv="pragma" content="no-cache">
-<meta http-equiv="expires" content="-1">
-<title>Internet hotspot - Advertisement</title>
-<link rel="stylesheet" href="css/style.css">
-<script>
+<!DOCTYPE html>
+<html lang="en" class="">
+	<head>
+		<meta http-equiv="refresh" content="2; url=$(link-orig)" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<title>Internet Hotspot - Advertisement</title>
+		<link href="css/style.css" rel="stylesheet" />
+		<script>
+			var popup = '';
+			function openOrig() {
+				if (window.focus) popup.focus();
+				location.href = unescape('$(link-orig-esc)');
+			}
+			function openAd() {
+				location.href = unescape('$(link-redirect-esc)');
+			}
+			function openAdvert() {
+				if (window.name != 'hotspot_advert') {
+					popup = open('$(link-redirect)', 'hotspot_advert', '');
+					setTimeout('openOrig()', 1000);
+					return;
+				}
+				setTimeout('openAd()', 1000);
+			}
+		</script>
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300" onLoad="openAdvert()">
+		<button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 fixed top-4 right-4 z-10">
+			<svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+				<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+			</svg>
+			<svg id="theme-toggle-light-icon" class="hidden w-5 h-5" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="10" cy="10" r="3" />
+				<line x1="10" y1="1.8" x2="10" y2="4" />
+				<line x1="10" y1="16" x2="10" y2="18.2" />
+				<line x1="1.8" y1="10" x2="4" y2="10" />
+				<line x1="16" y1="10" x2="18.2" y2="10" />
+				<line x1="4.2" y1="4.2" x2="5.8" y2="5.8" />
+				<line x1="14.2" y1="14.2" x2="15.8" y2="15.8" />
+				<line x1="4.2" y1="15.8" x2="5.8" y2="14.2" />
+				<line x1="14.2" y1="5.8" x2="15.8" y2="4.2" />
+			</svg>
+		</button>
 
-    var popup = '';
-    function openOrig() {
-	if (window.focus) popup.focus();
-	location.href = unescape('$(link-orig-esc)');
-    }
-    function openAd() {
-	location.href = unescape('$(link-redirect-esc)');
-    }
-    function openAdvert() {
-	if (window.name != 'hotspot_advert') {
-		popup = open('$(link-redirect)', 'hotspot_advert', '');
-		setTimeout("openOrig()", 1000);
-		return;
-	}
-	setTimeout("openAd()", 1000);
-    }
-</script>
-</head>
-<body onLoad="openAdvert()">
-    <div class="ie-fixMinHeight">
-        <div class="main">
-            <div class="wrap">
-                <h1>Advertisement</h1>
-                <p class="info">If nothing happens, open <a href="$(link-redirect)" target="hotspot_advert">advertisement</a> manually.</p>
-            </div>
-        </div>
-    </div>
-</body>
+		<div class="min-h-screen flex items-center justify-center p-4 text-center">
+			<div class="w-full max-w-sm">
+				<div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 py-10">
+					<svg class="w-16 h-16 text-blue-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+					<h1 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Advertisement</h1>
+					<p class="text-gray-600 dark:text-gray-400">If nothing happens, open <a href="$(link-redirect)" target="hotspot_advert" class="text-blue-500 hover:underline">advertisement</a> manually.</p>
+				</div>
+			</div>
+		</div>
+		<script src="js/app.js"></script>
+	</body>
 </html>

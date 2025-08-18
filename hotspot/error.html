@@ -1,23 +1,41 @@
-<html>
+<!DOCTYPE html>
+<html lang="en" class="">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<title>Internet Hotspot - Error</title>
+		<link href="css/style.css" rel="stylesheet" />
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+		<button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 fixed top-4 right-4 z-10">
+			<svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+				<path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+			</svg>
+			<svg id="theme-toggle-light-icon" class="hidden w-5 h-5" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="10" cy="10" r="3" />
+				<line x1="10" y1="1.8" x2="10" y2="4" />
+				<line x1="10" y1="16" x2="10" y2="18.2" />
+				<line x1="1.8" y1="10" x2="4" y2="10" />
+				<line x1="16" y1="10" x2="18.2" y2="10" />
+				<line x1="4.2" y1="4.2" x2="5.8" y2="5.8" />
+				<line x1="14.2" y1="14.2" x2="15.8" y2="15.8" />
+				<line x1="4.2" y1="15.8" x2="5.8" y2="14.2" />
+				<line x1="14.2" y1="5.8" x2="15.8" y2="4.2" />
+			</svg>
+		</button>
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="expires" content="-1">
-    <title>Internet hotspot - Error</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-
-<body>
-    <div class="ie-fixMinHeight">
-        <div class="main">
-            <div class="wrap">
-                <h1>Hotspot error: $(error)</h1>
-                <p class="info">Log in page: <a href="$(link-login)">$(link-login)</a></p>
-            </div>
-        </div>
-    </div>
-</body>
-
+		<div class="min-h-screen flex items-center justify-center p-4 text-center">
+			<div class="w-full max-w-sm">
+				<div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 py-10">
+					<svg class="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+					<h1 class="text-xl font-bold mb-2 text-gray-800 dark:text-gray-200">Hotspot Error</h1>
+					<p class="text-red-500 dark:text-red-400 mb-6">$(error)</p>
+					<a href="$(link-login)" class="w-full inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline">Try Again</a>
+				</div>
+			</div>
+		</div>
+		<script src="js/app.js"></script>
+	</body>
 </html>

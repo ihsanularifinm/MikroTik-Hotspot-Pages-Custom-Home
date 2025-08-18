@@ -1,79 +1,117 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" class="">
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="expires" content="-1" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Internet Hotspot - Log in</title>
+		<link href="css/style.css" rel="stylesheet" />
+	</head>
+	<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+		<button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 fixed top-4 right-4 z-10">
+			<svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+			<svg id="theme-toggle-light-icon" class="hidden w-5 h-5" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+				<circle cx="10" cy="10" r="3" />
+				<line x1="10" y1="1.8" x2="10" y2="4" />
+				<line x1="10" y1="16" x2="10" y2="18.2" />
+				<line x1="1.8" y1="10" x2="4" y2="10" />
+				<line x1="16" y1="10" x2="18.2" y2="10" />
+				<line x1="4.2" y1="4.2" x2="5.8" y2="5.8" />
+				<line x1="14.2" y1="14.2" x2="15.8" y2="15.8" />
+				<line x1="4.2" y1="15.8" x2="5.8" y2="14.2" />
+				<line x1="14.2" y1="5.8" x2="15.8" y2="4.2" />
+			</svg>
+		</button>
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="pragma" content="no-cache" />
-    <meta http-equiv="expires" content="-1" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Internet hotspot - Log in</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
+		$(if chap-id)
+		<form name="sendin" action="$(link-login-only)" method="post" style="display: none">
+			<input type="hidden" name="username" />
+			<input type="hidden" name="password" />
+			<input type="hidden" name="dst" value="$(link-orig)" />
+			<input type="hidden" name="popup" value="true" />
+		</form>
+		$(endif)
 
-<body>
+		<div class="min-h-screen flex items-center justify-center p-4">
+			<div class="w-full max-w-sm">
+				<form name="login" action="$(link-login-only)" method="post" class="bg-white dark:bg-gray-800 shadow-lg rounded-lg px-8 pt-6 pb-8 mb-4" $(if chap-id) onSubmit="return doLogin()" $(endif)>
+					<input type="hidden" name="dst" value="$(link-orig)" />
+					<input type="hidden" name="popup" value="true" />
 
-    <!-- two other colors
+					<div class="mb-6 text-center">
+						<svg class="w-48 inline-block fill-current text-gray-800 dark:text-gray-200" viewBox="0 0 174 42">
+							<path d="M7.32 13.66L0 41.74 3.12 41.74 9.49 15.94 9.58 15.94 15.01 41.74 18.22 41.74 36.86 16.34 36.95 16.34 30.02 41.74 33.18 41.74 40.4 13.66 35.73 13.66 17.23 38.87 11.99 13.66 7.32 13.66zM43.43 21.45L38.19 41.74 41.16 41.74 46.4 21.45 43.43 21.45zM50.68 21.45L45.5 41.74 48.47 41.74 50.36 34.39 55.55 30.77 62.02 41.74 65.27 41.74 57.91 29.28 69.43 21.45 65.46 21.45 51.21 31.36 51.12 31.28 53.66 21.45 50.68 21.45z" />
+							<path d="M71.18 21.45L65.94 41.74h3l2.74-10.62c1-3.81 3.82-7.39 9.16-7.47.56 0 1.13 0 1.7 0l.66-2.48c-.52 0-1.09 0-1.61 0-4.34 0-6.94 2-8.82 5h-.1l1.23-4.68zM103.8 28.8c0-5-4-7.94-9.63-7.94-8.69 0-13.59 6.37-13.59 13 0 5.07 3.44 8.45 9.72 8.45 9 0 13.5-6.68 13.5-13.53m-3 .52c0 4.72-3.44 10.93-9.95 10.93-5 0-7.32-2.68-7.32-6.61 0-4.76 3.59-10.7 10.1-10.7 4.77 0 7.17 2.6 7.17 6.38M132.33 21.43L134.26 13.66 105.19 13.66 103.27 21.45 112.59 21.45 112.59 21.45 122.99 21.45 122.99 21.45 132.33 21.43zM111.67 25.17L107.55 41.74 117.93 41.74 122.06 25.17 122.06 25.16 111.67 25.16 111.67 25.17zM134 25.17l-4.11 16.57h9.35l4.1-16.57zm10.28-3.73l1.94-7.78h-9.34l-2 7.79zM150.09 13.66L143.11 41.74 152.45 41.74 153.91 35.92 156.04 34.34 159.34 41.74 169.49 41.74 163.26 29.55 174.26 21.33 163.07 21.33 156.18 27.3 156.09 27.3 159.44 13.66 150.09 13.66zM47.45 0c1.14 7.93 5.39 12.74 14.07 13.14A10.69 10.69 0 0 1 47.45 0" fill-rule="evenodd" />
+							<path d="M42.91,1.4c.1,0,.11,0,.12.11A16.55,16.55,0,0,0,48.26,13a16.6,16.6,0,0,0,12,4.66c-10,4-20.55-5.6-17.33-16.28" fill-rule="evenodd" />
+						</svg>
+					</div>
 
-<body class="lite">
-<body class="dark">
+					<p class="text-center text-sm mb-4 $(if error)text-red-500 dark:text-red-400$(else)text-gray-600 dark:text-gray-200$(endif)">$(if error == "")Please log in to use the internet hotspot service. $(if trial == 'yes')<br />Free trial available, <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)" class="font-semibold text-blue-500 hover:underline dark:text-blue-400">click here</a>.$(endif) $(endif) $(if error)$(error)$(endif)</p>
 
--->
+					<div class="mb-4 relative">
+						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+							<img src="img/user.svg" alt="Username Icon" class="h-5 w-5 dark:invert" />
+						</span>
+						<input name="username" type="text" value="$(username)" placeholder="Username" class="w-full pl-10 pr-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" autocapitalize="none" />
+					</div>
 
-    $(if chap-id)
-    <form name="sendin" action="$(link-login-only)" method="post" style="display:none">
-        <input type="hidden" name="username" />
-        <input type="hidden" name="password" />
-        <input type="hidden" name="dst" value="$(link-orig)" />
-        <input type="hidden" name="popup" value="true" />
-    </form>
+					<div class="mb-6 relative">
+						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
+							<img src="img/password.svg" alt="Password Icon" class="h-5 w-5 dark:invert" />
+						</span>
+						<input id="password-input" name="password" type="password" placeholder="Password" class="w-full pl-10 pr-10 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						<button type="button" id="toggle-password-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+							<svg id="eye-icon-show" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+								<path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+								<path fill-rule="evenodd" d="M.458 10C3.732 4.943 7.523 3 10 3s6.268 1.943 9.542 7c-3.274 5.057-7.523 7-9.542 7S3.732 15.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+							</svg>
+							<svg id="eye-icon-hide" class="hidden h-5 w-5 text-gray-500 dark:text-gray-400" viewBox="0 0 20 20">
+								<path fill="currentColor" d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+								<path fill="currentColor" fill-rule="evenodd" d="M.458 10C3.732 4.943 7.523 3 10 3s6.268 1.943 9.542 7c-3.274 5.057-7.523 7-9.542 7S3.732 15.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
 
-    <script src="/md5.js"></script>
-    <script>
-        function doLogin() {
-            document.sendin.username.value = document.login.username.value;
-            document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value + '$(chap-challenge)');
-            document.sendin.submit();
-            return false;
-        }
+								<line stroke="white" stroke-width="3.5" x1="3.5" y1="3.5" x2="16.5" y2="16.5" stroke-linecap="round" />
+								<line stroke="currentColor" stroke-width="1.5" x1="3.5" y1="3.5" x2="16.5" y2="16.5" stroke-linecap="round" />
+							</svg>
+						</button>
+					</div>
 
-    </script>
-    $(endif)
-    <div class="ie-fixMinHeight">
-        <div class="main">
-            <div class="wrap animated fadeIn">
-                <form name="login" action="$(link-login-only)" method="post" $(if chap-id) onSubmit="return doLogin()" $(endif)>
-                    <input type="hidden" name="dst" value="$(link-orig)" />
-                    <input type="hidden" name="popup" value="true" />
-                    <svg class="logo" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 174 42">
-                        <path fill="#fff" d="M7.32 13.66L0 41.74 3.12 41.74 9.49 15.94 9.58 15.94 15.01 41.74 18.22 41.74 36.86 16.34 36.95 16.34 30.02 41.74 33.18 41.74 40.4 13.66 35.73 13.66 17.23 38.87 11.99 13.66 7.32 13.66zM43.43 21.45L38.19 41.74 41.16 41.74 46.4 21.45 43.43 21.45zM50.68 21.45L45.5 41.74 48.47 41.74 50.36 34.39 55.55 30.77 62.02 41.74 65.27 41.74 57.91 29.28 69.43 21.45 65.46 21.45 51.21 31.36 51.12 31.28 53.66 21.45 50.68 21.45z" />
-                        <path d="M71.18 21.45L65.94 41.74h3l2.74-10.62c1-3.81 3.82-7.39 9.16-7.47.56 0 1.13 0 1.7 0l.66-2.48c-.52 0-1.09 0-1.61 0-4.34 0-6.94 2-8.82 5h-.1l1.23-4.68zM103.8 28.8c0-5-4-7.94-9.63-7.94-8.69 0-13.59 6.37-13.59 13 0 5.07 3.44 8.45 9.72 8.45 9 0 13.5-6.68 13.5-13.53m-3 .52c0 4.72-3.44 10.93-9.95 10.93-5 0-7.32-2.68-7.32-6.61 0-4.76 3.59-10.7 10.1-10.7 4.77 0 7.17 2.6 7.17 6.38M132.33 21.43L134.26 13.66 105.19 13.66 103.27 21.45 112.59 21.45 112.59 21.45 122.99 21.45 122.99 21.45 132.33 21.43zM111.67 25.17L107.55 41.74 117.93 41.74 122.06 25.17 122.06 25.16 111.67 25.16 111.67 25.17zM134 25.17l-4.11 16.57h9.35l4.1-16.57zm10.28-3.73l1.94-7.78h-9.34l-2 7.79zM150.09 13.66L143.11 41.74 152.45 41.74 153.91 35.92 156.04 34.34 159.34 41.74 169.49 41.74 163.26 29.55 174.26 21.33 163.07 21.33 156.18 27.3 156.09 27.3 159.44 13.66 150.09 13.66zM47.45 0c1.14 7.93 5.39 12.74 14.07 13.14A10.69 10.69 0 0 1 47.45 0" fill="#fff" fill-rule="evenodd" />
-                        <path d="M42.91,1.4c.1,0,.11,0,.12.11A16.55,16.55,0,0,0,48.26,13a16.6,16.6,0,0,0,12,4.66c-10,4-20.55-5.6-17.33-16.28" fill="#fff" fill-rule="evenodd" /></svg>
+					<div class="flex items-center justify-between">
+						<input type="submit" value="Login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline cursor-pointer" />
+					</div>
+				</form>
 
+				<p class="text-center text-xs text-gray-500 dark:text-gray-400">Powered by MikroTik RouterOS</p>
+			</div>
+		</div>
 
-                    <p class="info $(if error)alert$(endif)">
-                        $(if error == "")Please log in to use the internet hotspot service $(if trial == 'yes')<br />Free trial available, <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)">click here</a>.$(endif)
-                        $(endif)
+		<script src="md5.js"></script>
+		<script>
+			function doLogin() {
+				document.sendin.username.value = document.login.username.value;
+				document.sendin.password.value = hexMD5('$(chap-id)' + document.login.password.value + '$(chap-challenge)');
+				document.sendin.submit();
+				return false;
+			}
+		</script>
 
-                        $(if error)$(error)$(endif)
-                    </p>
-                    <label>
-                        <img class="ico" src="img/user.svg" alt="#" />
-                        <input name="username" type="text" value="$(username)" placeholder="Username" />
-                    </label>
+		<script>
+			const passwordInput = document.getElementById('password-input');
+			const togglePasswordBtn = document.getElementById('toggle-password-btn');
+			const eyeIconShow = document.getElementById('eye-icon-show');
+			const eyeIconHide = document.getElementById('eye-icon-hide');
 
-                    <label>
-                        <img class="ico" src="img/password.svg" alt="#" />
-                        <input name="password" type="password" placeholder="Password" />
-                    </label>
+			togglePasswordBtn.addEventListener('click', function () {
+				// Cek tipe input saat ini
+				const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+				passwordInput.setAttribute('type', type);
 
-                    <input type="submit" value="Connect" />
+				// Ganti ikon mata
+				eyeIconShow.classList.toggle('hidden');
+				eyeIconHide.classList.toggle('hidden');
+			});
+		</script>
 
-                </form>
-                <p class="info bt">Powered by MikroTik RouterOS</p>
-
-            </div>
-        </div>
-    </div>
-</body>
-
+		<script src="js/app.js"></script>
+	</body>
 </html>

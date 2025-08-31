@@ -7,9 +7,9 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 ## ✨ Tampilan (Preview)
 
 <p align="center">
-  <img src="preview/screenshot-light.png" width="45%" alt="Light Mode Preview">
-  &nbsp;&nbsp;
   <img src="preview/screenshot-dark.png" width="45%" alt="Dark Mode Preview">
+  &nbsp;&nbsp;
+  <img src="preview/screenshot-light.png" width="45%" alt="Light Mode Preview">
 </p>
 
 ## 🚀 Fitur Utama
@@ -26,7 +26,6 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 ## 🛠️ Teknologi yang Digunakan
 
 - [Tailwind CSS](https://tailwindcss.com/) - Utility-first CSS framework.
-- [Heroicons](https://heroicons.com/) - Untuk beberapa ikon SVG yang bersih.
 - Vanilla JavaScript - Untuk fungsionalitas interaktif seperti _toggle_ tema dan password.
 
 ## ⚙️ Cara Penggunaan (Instalasi)
@@ -54,4 +53,4 @@ Proyek ini menggunakan **Tailwind CSS**, yang memerlukan proses _build_ untuk me
 
 ## 🙏 Credits
 
-Desain ini dikembangkan dari awal tetapi terinspirasi dari templat hotspot default MikroTik. [cite_start]Template asli yang menjadi referensi awal dapat ditemukan di repositori [ihsanularifinm/MikroTik-Hotspot-Pages-Default](https://github.com/ihsanularifinm/MikroTik-Hotspot-Pages-Default). [cite: 3]
+Desain ini dikembangkan dari awal tetapi terinspirasi dari templat hotspot default MikroTik. Template asli yang menjadi referensi awal dapat ditemukan di repositori [ihsanularifinm/MikroTik-Hotspot-Pages-Default](https://github.com/ihsanularifinm/MikroTik-Hotspot-Pages-Default).

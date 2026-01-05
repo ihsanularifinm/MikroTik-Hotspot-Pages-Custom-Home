@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" class="">
-	<head>
+	<head data-i18n-title="page_login">
 		<meta charset="utf-8" />
 		<meta http-equiv="pragma" content="no-cache" />
 		<meta http-equiv="expires" content="-1" />
@@ -9,18 +9,21 @@
 		<link href="css/style.css" rel="stylesheet" />
 	</head>
 	<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
+		<!-- Language Toggle -->
+		<button id="lang-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 fixed top-4 right-16 z-10">
+			<span id="lang-icon-en" class="font-bold text-xs">EN</span>
+			<span id="lang-icon-id" class="hidden font-bold text-xs">ID</span>
+		</button>
+
+		<!-- Theme Toggle -->
 		<button id="theme-toggle" type="button" class="text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none rounded-lg text-sm p-2.5 fixed top-4 right-4 z-10">
-			<svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
-			<svg id="theme-toggle-light-icon" class="hidden w-5 h-5" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<circle cx="10" cy="10" r="3" />
-				<line x1="10" y1="1.8" x2="10" y2="4" />
-				<line x1="10" y1="16" x2="10" y2="18.2" />
-				<line x1="1.8" y1="10" x2="4" y2="10" />
-				<line x1="16" y1="10" x2="18.2" y2="10" />
-				<line x1="4.2" y1="4.2" x2="5.8" y2="5.8" />
-				<line x1="14.2" y1="14.2" x2="15.8" y2="15.8" />
-				<line x1="4.2" y1="15.8" x2="5.8" y2="14.2" />
-				<line x1="14.2" y1="5.8" x2="15.8" y2="4.2" />
+			<!-- Heroicons: Moon (solid) - for dark mode -->
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden w-5 h-5" id="theme-toggle-dark-icon">
+				<path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 0 1 .162.819A8.97 8.97 0 0 0 9 6a9 9 0 0 0 9 9 8.97 8.97 0 0 0 3.463-.69.75.75 0 0 1 .981.98 10.503 10.503 0 0 1-9.694 6.46c-5.799 0-10.5-4.7-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 0 1 .818.162Z" clip-rule="evenodd" />
+			</svg>
+			<!-- Heroicons: Sun (solid) - for light mode -->
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="hidden w-5 h-5" id="theme-toggle-light-icon">
+				<path d="M12 2.25a.75.75 0 0 1 .75.75v2.25a.75.75 0 0 1-1.5 0V3a.75.75 0 0 1 .75-.75ZM7.5 12a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM18.894 6.166a.75.75 0 0 0-1.06-1.06l-1.591 1.59a.75.75 0 1 0 1.06 1.061l1.591-1.59ZM21.75 12a.75.75 0 0 1-.75.75h-2.25a.75.75 0 0 1 0-1.5H21a.75.75 0 0 1 .75.75ZM17.834 18.894a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 1 0-1.061 1.06l1.59 1.591ZM12 18a.75.75 0 0 1 .75.75V21a.75.75 0 0 1-1.5 0v-2.25A.75.75 0 0 1 12 18ZM7.758 17.303a.75.75 0 0 0-1.061-1.06l-1.591 1.59a.75.75 0 0 0 1.06 1.061l1.591-1.59ZM6 12a.75.75 0 0 1-.75.75H3a.75.75 0 0 1 0-1.5h2.25A.75.75 0 0 1 6 12ZM6.697 7.757a.75.75 0 0 0 1.06-1.06l-1.59-1.591a.75.75 0 0 0-1.061 1.06l1.59 1.591Z" />
 			</svg>
 		</button>
 
@@ -47,41 +50,45 @@
 						</svg>
 					</div>
 
-					<p class="text-center text-sm mb-4 $(if error)text-red-500 dark:text-red-400$(else)text-gray-600 dark:text-gray-200$(endif)">$(if error == "")Please log in to use the internet hotspot service. $(if trial == 'yes')<br />Free trial available, <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)" class="font-semibold text-blue-500 hover:underline dark:text-blue-400">click here</a>.$(endif) $(endif) $(if error)$(error)$(endif)</p>
+					<p class="text-center text-sm mb-4 $(if error)text-red-500 dark:text-red-400$(else)text-gray-600 dark:text-gray-200$(endif)">$(if error == "")<span data-i18n="login_prompt">Please log in to use the internet hotspot service.</span> $(if trial == 'yes')<br /><span data-i18n="login_trial">Free trial available,</span> <a href="$(link-login-only)?dst=$(link-orig-esc)&amp;username=T-$(mac-esc)" class="font-semibold text-blue-500 hover:underline dark:text-blue-400" data-i18n="login_trial_link">click here</a>.$(endif) $(endif) $(if error)<span data-i18n-error>$(error)</span>$(endif)</p>
 
 					<div class="mb-4 relative">
 						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-							<img src="img/user.svg" alt="Username Icon" class="h-5 w-5 dark:invert" />
+							<!-- Heroicons: User (solid) -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
+								<path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" />
+							</svg>
 						</span>
-						<input name="username" type="text" value="$(username)" placeholder="Username" class="w-full pl-10 pr-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" autocapitalize="none" />
+						<input name="username" type="text" value="$(username)" data-i18n-placeholder="username_placeholder" placeholder="Username" class="w-full pl-10 pr-4 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" autocapitalize="none" />
 					</div>
 
 					<div class="mb-6 relative">
 						<span class="absolute inset-y-0 left-0 flex items-center pl-3">
-							<img src="img/password.svg" alt="Password Icon" class="h-5 w-5 dark:invert" />
-						</span>
-						<input id="password-input" name="password" type="password" placeholder="Password" class="w-full pl-10 pr-10 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-						<button type="button" id="toggle-password-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
-							<svg id="eye-icon-show" class="h-5 w-5 text-gray-500 dark:text-gray-400" fill="currentColor" viewBox="0 0 20 20">
-								<path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-								<path fill-rule="evenodd" d="M.458 10C3.732 4.943 7.523 3 10 3s6.268 1.943 9.542 7c-3.274 5.057-7.523 7-9.542 7S3.732 15.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+							<!-- Heroicons: Key (solid) -->
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5 text-gray-400">
+								<path fill-rule="evenodd" d="M15.75 1.5a6.75 6.75 0 0 0-6.651 7.906c.067.39-.032.717-.221.906l-6.5 6.499a3 3 0 0 0-.878 2.121v2.818c0 .414.336.75.75.75H6a.75.75 0 0 0 .75-.75v-1.5h1.5A.75.75 0 0 0 9 19.5V18h1.5a.75.75 0 0 0 .53-.22l2.658-2.658c.19-.189.517-.288.906-.22A6.75 6.75 0 1 0 15.75 1.5Zm0 3a.75.75 0 0 0 0 1.5A2.25 2.25 0 0 1 18 8.25a.75.75 0 0 0 1.5 0 3.75 3.75 0 0 0-3.75-3.75Z" clip-rule="evenodd" />
 							</svg>
-							<svg id="eye-icon-hide" class="hidden h-5 w-5 text-gray-500 dark:text-gray-400" viewBox="0 0 20 20">
-								<path fill="currentColor" d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-								<path fill="currentColor" fill-rule="evenodd" d="M.458 10C3.732 4.943 7.523 3 10 3s6.268 1.943 9.542 7c-3.274 5.057-7.523 7-9.542 7S3.732 15.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
-
-								<line stroke="white" stroke-width="3.5" x1="3.5" y1="3.5" x2="16.5" y2="16.5" stroke-linecap="round" />
-								<line stroke="currentColor" stroke-width="1.5" x1="3.5" y1="3.5" x2="16.5" y2="16.5" stroke-linecap="round" />
+						</span>
+						<input id="password-input" name="password" type="password" data-i18n-placeholder="password_placeholder" placeholder="Password" class="w-full pl-10 pr-10 py-2 border rounded-md bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						<button type="button" id="toggle-password-btn" class="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer">
+							<!-- Heroicons: Eye (outline) - show password -->
+							<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5 text-gray-500 dark:text-gray-400" id="eye-icon-show">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+								<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+							</svg>
+							<!-- Heroicons: Eye Slash (outline) - hide password -->
+							<svg id="eye-icon-hide" class="hidden h-5 w-5 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+								<path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
 							</svg>
 						</button>
 					</div>
 
 					<div class="flex items-center justify-between">
-						<input type="submit" value="Login" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline cursor-pointer" />
+						<input type="submit" data-i18n-value="login_btn" value="Connect" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:shadow-outline cursor-pointer" />
 					</div>
 				</form>
 
-				<p class="text-center text-xs text-gray-500 dark:text-gray-400">Powered by MikroTik RouterOS</p>
+				<p class="text-center text-xs text-gray-500 dark:text-gray-400" data-i18n="powered_by">Powered by MikroTik RouterOS</p>
 			</div>
 		</div>
 
@@ -102,11 +109,8 @@
 			const eyeIconHide = document.getElementById('eye-icon-hide');
 
 			togglePasswordBtn.addEventListener('click', function () {
-				// Cek tipe input saat ini
 				const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
 				passwordInput.setAttribute('type', type);
-
-				// Ganti ikon mata
 				eyeIconShow.classList.toggle('hidden');
 				eyeIconHide.classList.toggle('hidden');
 			});

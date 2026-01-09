@@ -72,6 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			'time_left': 'Time left',
 			'relogin_btn': 'Log in again',
 			'login_new_btn': 'Log in',
+			'logout_login_btn': 'Log in',
+			'logout_clear_btn': 'Log out & Clear',
 
 			// Error page
 			'error_title': 'Hotspot Error',
@@ -142,6 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
 			'time_left': 'Sisa waktu',
 			'relogin_btn': 'Masuk lagi',
 			'login_new_btn': 'Masuk',
+			'logout_login_btn': 'Masuk',
+			'logout_clear_btn': 'Keluar & Hapus Sesi',
 
 			// Error page
 			'error_title': 'Kesalahan Hotspot',

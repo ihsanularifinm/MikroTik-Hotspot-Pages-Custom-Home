@@ -11,6 +11,11 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
   &nbsp;&nbsp;
   <img src="preview/screenshot-light.png" width="45%" alt="Light Mode Preview">
 </p>
+<p align="center">
+  <img src="preview/screenshot-id-lang.png" width="45%" alt="Bahasa Indonesia Preview">
+  &nbsp;&nbsp;
+  <img src="preview/screenshot-status.png" width="45%" alt="Status Preview">
+</p>
 
 ## 🚀 Fitur Utama
 
@@ -18,7 +23,9 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 - **Dibangun dengan Tailwind CSS v4**: Kustomisasi yang sangat mudah dan ukuran file CSS yang sangat kecil berkat proses optimasi.
 - **Mode Gelap & Terang (Dark/Light Mode)**: Pengguna bisa memilih tema favoritnya, dan pilihan akan disimpan di browser untuk kunjungan berikutnya.
 - **Multi-Bahasa (English/Indonesia)**: Toggle bahasa dengan tombol EN/ID di pojok kanan atas. Pilihan bahasa disimpan di localStorage.
+- **Sticky Navbar**: Tombol toggle tema dan bahasa berada di navbar sticky yang tidak overlap dengan konten di mobile.
 - **Terjemahan Error Messages**: Pesan error dari MikroTik otomatis diterjemahkan sesuai bahasa yang dipilih.
+- **Session Cookie Control**: Opsi "Log out & Clear" untuk menghapus session cookie saat logout (fresh login berikutnya).
 - **Default Mode Gelap**: Secara otomatis menampilkan tema gelap untuk pengunjung baru untuk kenyamanan mata.
 - **Tampilkan/Sembunyikan Password**: Memudahkan pengguna saat mengetik password di perangkat mobile.
 - **Responsif**: Tampilan optimal di perangkat desktop maupun mobile.
@@ -31,8 +38,8 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 | File | Deskripsi |
 |------|-----------|
 | `login.html` | Halaman login dengan form username/password |
-| `status.html` | Status koneksi dengan tombol Logout dan Lanjutkan |
-| `logout.html` | Konfirmasi logout dengan tombol Relogin dan Login |
+| `status.html` | Status koneksi dengan tombol Log out, Log out & Clear, dan Continue |
+| `logout.html` | Konfirmasi logout dengan tombol Log in |
 | `error.html` | Halaman error dengan pesan yang diterjemahkan |
 | `alogin.html` | Halaman sukses login (redirect) |
 | `radvert.html` | Halaman advertisement |
@@ -91,11 +98,15 @@ Untuk menambah atau mengedit terjemahan, buka file `hotspot/js/app.js` dan edit 
 ```javascript
 const translations = {
   en: {
-    'login_btn': 'Login',
+    'login_btn': 'Connect',
+    'logout_btn': 'Log out',
+    'logout_clear_btn': 'Log out & Clear',
     // ... tambahkan key baru di sini
   },
   id: {
-    'login_btn': 'Masuk',
+    'login_btn': 'Sambungkan',
+    'logout_btn': 'Keluar',
+    'logout_clear_btn': 'Keluar & Hapus Sesi',
     // ... tambahkan terjemahan di sini
   }
 };

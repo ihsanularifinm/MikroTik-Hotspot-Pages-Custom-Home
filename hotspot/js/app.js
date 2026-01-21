@@ -7,14 +7,36 @@ document.addEventListener('DOMContentLoaded', () => {
 	const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
 
 	const applyTheme = () => {
-		if (localStorage.getItem('color-theme') === 'dark' || !('color-theme' in localStorage)) {
+		let isDark = false;
+		
+		// 1. Check LocalStorage
+		if ('color-theme' in localStorage) {
+			isDark = localStorage.getItem('color-theme') === 'dark';
+		} else {
+			// 2. Check Config
+			if (typeof hotspotConfig !== 'undefined') {
+				if (hotspotConfig.defaultTheme === 'dark') {
+					isDark = true;
+				} else if (hotspotConfig.defaultTheme === 'light') {
+					isDark = false;
+				} else {
+					// auto or undefined -> check system
+					isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				}
+			} else {
+				// Fallback to system
+				isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			}
+		}
+
+		if (isDark) {
 			document.documentElement.classList.add('dark');
-			if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
-			if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+			if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
+			if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
 		} else {
 			document.documentElement.classList.remove('dark');
-			if (themeToggleDarkIcon) themeToggleDarkIcon.classList.remove('hidden');
-			if (themeToggleLightIcon) themeToggleLightIcon.classList.add('hidden');
+			if (themeToggleDarkIcon) themeToggleDarkIcon.classList.add('hidden');
+			if (themeToggleLightIcon) themeToggleLightIcon.classList.remove('hidden');
 		}
 	};
 
@@ -33,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// =====================
 	// LANGUAGE TOGGLE (i18n)
 	// =====================
-	const translations = {
+	window.translations = {
 		en: {
 			// Page titles
 			'page_login': 'Internet Hotspot - Log in',
@@ -47,10 +69,21 @@ document.addEventListener('DOMContentLoaded', () => {
 			'login_prompt': 'Please log in to use the internet hotspot service.',
 			'login_trial': 'Free trial available,',
 			'login_trial_link': 'click here',
+			'tab_single': 'User = Password',
+			'tab_dual': 'User & Password',
+			'user_eq_pass_placeholder': 'User = Password',
 			'username_placeholder': 'Username',
 			'password_placeholder': 'Password',
 			'login_btn': 'Connect',
 			'powered_by': 'Powered by MikroTik RouterOS',
+			'or_divider': 'or',
+			'scan_qr_btn': 'Scan QR Code',
+			'scan_qr_title': 'Scan QR Code',
+			'scanning': 'Point camera at QR code...',
+			'scan_success': 'QR Code detected!',
+			'scan_error': 'Invalid QR Code format',
+			'camera_error': 'Camera access failed (HTTPS required)',
+			'camera_permission': 'Please allow camera access',
 
 			// Status page
 			'trial_status': 'Trial User Status',
@@ -119,10 +152,21 @@ document.addEventListener('DOMContentLoaded', () => {
 			'login_prompt': 'Silakan masuk untuk menggunakan layanan internet hotspot.',
 			'login_trial': 'Uji coba gratis tersedia,',
 			'login_trial_link': 'klik di sini',
+			'tab_single': 'User = Password',
+			'tab_dual': 'User & Password',
+			'user_eq_pass_placeholder': 'Nama pengguna = Kata sandi',
 			'username_placeholder': 'Nama pengguna',
 			'password_placeholder': 'Kata sandi',
 			'login_btn': 'Sambungkan',
 			'powered_by': 'Didukung oleh MikroTik RouterOS',
+			'or_divider': 'atau',
+			'scan_qr_btn': 'Pindai Kode QR',
+			'scan_qr_title': 'Pindai Kode QR',
+			'scanning': 'Arahkan kamera ke kode QR...',
+			'scan_success': 'Kode QR terdeteksi!',
+			'scan_error': 'Format kode QR tidak valid',
+			'camera_error': 'Akses kamera gagal (HTTPS diperlukan)',
+			'camera_permission': 'Izinkan akses kamera',
 
 			// Status page
 			'trial_status': 'Status Pengguna Uji Coba',
@@ -203,10 +247,18 @@ document.addEventListener('DOMContentLoaded', () => {
 	const langIconEn = document.getElementById('lang-icon-en');
 	const langIconId = document.getElementById('lang-icon-id');
 
-	const getCurrentLang = () => localStorage.getItem('language') || 'en';
+	window.getCurrentLang = () => {
+		const storedLang = localStorage.getItem('language');
+		if (storedLang) return storedLang;
+		
+		if (typeof hotspotConfig !== 'undefined' && hotspotConfig.defaultLang) {
+			return hotspotConfig.defaultLang;
+		}
+		return 'en';
+	};
 
 	const applyTranslations = (lang) => {
-		const t = translations[lang];
+		const t = window.translations[lang];
 		if (!t) return;
 
 		// Update page title
@@ -294,5 +346,62 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	}
 
+	const configureProtocol = () => {
+		if (typeof hotspotConfig === 'undefined') return;
+
+		// Automatic Protocol Logic:
+		// Enable QR Code = true  -> Protocol https (Required for camera)
+		// Enable QR Code = false -> Protocol http (Default assumption)
+		// You can still manually override by adding 'loginProtocol' to config if needed, 
+		// but this default behavior covers the standard use case.
+		let protocol = hotspotConfig.enableQRCode ? 'https' : 'http';
+
+		// Allow manual override if strictly specified in config
+		if (hotspotConfig.loginProtocol) {
+			protocol = hotspotConfig.loginProtocol;
+		}
+
+		console.log('Login Protocol configured to:', protocol);
+
+		// 1. Update Forms (login, sendin)
+		document.querySelectorAll('form').forEach(form => {
+			const action = form.getAttribute('action');
+			if (action && action.startsWith('http')) {
+				form.action = action.replace(/^https?:/, protocol + ':');
+			}
+		});
+
+		// 2. Update Free Trial Link & other login links
+		document.querySelectorAll('a[href*="/login"]').forEach(link => {
+			const href = link.getAttribute('href');
+			if (href && href.startsWith('http')) {
+				link.href = href.replace(/^https?:/, protocol + ':');
+			}
+		});
+	};
+
+	const configureLogo = () => {
+		if (typeof hotspotConfig === 'undefined' || !hotspotConfig.logo) return;
+
+		const logoPath = hotspotConfig.logo;
+
+		// 1. Update Main Logo (if element exists)
+		const mainLogo = document.getElementById('main-logo');
+		if (mainLogo) {
+			mainLogo.src = logoPath;
+		}
+
+		// 2. Update Favicon (Tab Icon)
+		let link = document.querySelector("link[rel~='icon']");
+		if (!link) {
+			link = document.createElement('link');
+			link.rel = 'icon';
+			document.getElementsByTagName('head')[0].appendChild(link);
+		}
+		link.href = logoPath;
+	};
+
+	configureLogo();
+	configureProtocol();
 	applyLanguage();
 });

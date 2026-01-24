@@ -84,22 +84,40 @@ function initQRControls() {
     if (btnUploadQr && inpFileQr) {
         btnUploadQr.onclick = () => inpFileQr.click();
         
-        inpFileQr.onchange = (e) => {
+        inpFileQr.onchange = async (e) => {
             if (e.target.files.length === 0) return;
             const file = e.target.files[0];
             
-            // UI Feedback
-            updateStatus('Scanning file...', 'text-blue-500');
+            // 1. Prioritize Upload: Stop Camera if running
+            if (isScanning && html5QrcodeScanner) {
+                try {
+                    await html5QrcodeScanner.stop();
+                    isScanning = false;
+                    updateUIState(false); // Switch button back to "Start Camera"
+                    console.log('Camera stopped for file upload');
+                } catch (err) {
+                    console.warn("Failed to stop camera before file scan", err);
+                }
+            }
+            
+            // 2. UI Feedback
+            updateStatus(getTranslation('scan_file_scanning') || 'Scanning file...', 'text-blue-500 animate-pulse');
 
             if (!html5QrcodeScanner) initQRScanner();
             
+            // 3. Scan File
             html5QrcodeScanner.scanFileV2(file, true)
             .then(decodedResult => {
                  onScanSuccess(decodedResult.decodedText, decodedResult);
             })
             .catch(err => {
                 console.error("File scan error", err);
-                updateStatus('No QR Code found in image', 'text-red-500');
+                updateStatus(getTranslation('scan_no_qr') || 'No QR Code found in image', 'text-red-500 animate-pulse');
+                
+                // Restore status to Inactive (User must manually restart camera if desired)
+                setTimeout(() => {
+                    updateStatus(getTranslation('scan_status_inactive') || 'Camera is inactive', 'text-gray-500 animate-pulse');
+                }, 3000);
             });
         };
     }
@@ -191,7 +209,9 @@ function startQRScanner() {
             closeBtn.addEventListener('click', () => stopQRScanner(true));
         }
         // Apply i18n if available
-        if (typeof applyTranslations === 'function') applyTranslations();
+        if (typeof applyTranslations === 'function' && typeof getCurrentLang === 'function') {
+            applyTranslations(getCurrentLang());
+        }
     }
     
     // Initialize controls if needed
@@ -250,7 +270,12 @@ function startQRScanner() {
 
                         // encode current URL to pass as return target
                         const returnUrl = encodeURIComponent(window.location.href);
-                        const finalScannerUrl = `${hotspotConfig.qrExternalUrl}?return=${returnUrl}`;
+                        
+                        // Pass Theme and Language settings to external scanner
+                        const currentTheme = localStorage.getItem('color-theme') || 'light';
+                        const currentLang = (typeof getCurrentLang === 'function') ? getCurrentLang() : 'en';
+                        
+                        const finalScannerUrl = `${hotspotConfig.qrExternalUrl}?return=${returnUrl}&theme=${currentTheme}&lang=${currentLang}`;
                         
                         // Use consistent layout with Failure state
                         container.innerHTML = `
@@ -556,23 +581,21 @@ function updateUIState(cameraRunning) {
 function onScanSuccess(decodedText, decodedResult) {
     console.log('QR Code scanned:', decodedText);
     
-    // Stop scanning immediately
-    stopQRScanner();
-    
     // Parse QR content (expected format: username:password)
     const credentials = parseQRCredentials(decodedText);
     
     if (credentials) {
-        // Auto-fill form
+        // Auto-fill form (behind the scenes)
         fillLoginForm(credentials.username, credentials.password);
         
-        // Show success message briefly then auto-submit
+        // Show success message
         showScanSuccess();
         
-        // Auto-submit after short delay
+        // Delay closing and submitting to let user see the success state/image
         setTimeout(() => {
-            autoSubmitLogin();
-        }, 500);
+            stopQRScanner(true); // Close modal
+            autoSubmitLogin();   // Submit form
+        }, 1500); 
     } else {
         showScanError('scan_error');
     }

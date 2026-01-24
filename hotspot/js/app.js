@@ -102,6 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			'btn_open_scanner': 'Open Scanner',
 			'status_connection_success': 'Connection Successful',
 			'scan_status_connection_failed': 'Connection Failed',
+			'scan_file_scanning': 'Scanning file...',
+			'scan_no_qr': 'No QR code found',
+			'scan_camera_active': 'Camera Active',
 
 			// Status page
 			'trial_status': 'Trial User Status',
@@ -203,6 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			'btn_open_scanner': 'Buka Scanner',
 			'status_connection_success': 'Koneksi Berhasil',
 			'scan_status_connection_failed': 'Koneksi Gagal',
+			'scan_file_scanning': 'Memindai file...',
+			'scan_no_qr': 'Tidak ada kode QR ditemukan',
+			'scan_camera_active': 'Kamera Aktif',
 
 			// Status page
 			'trial_status': 'Status Pengguna Uji Coba',

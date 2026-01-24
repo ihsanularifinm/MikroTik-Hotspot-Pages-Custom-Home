@@ -128,7 +128,7 @@ Jika langkah ini tidak dilakukan, scanner akan menampilkan pesan error **"Connec
 
 > [!IMPORTANT]
 > **Catatan Penting untuk Custom Scanner**
-> Default `qrExternalUrl` menggunakan scanner milik proyek ini (`my-qr-as1.pages.dev`) yang sudah terintegrasi dengan WebSocket Check.
+> Default `qrExternalUrl` menggunakan scanner ([`my-qr-as1.pages.dev`](https://my-qr-as1.pages.dev)) yang sudah terintegrasi dengan WebSocket Check.
 >
 > 🔗 **Source Code Scanner & Generator:** [https://github.com/ihsanularifinm/my-qr](https://github.com/ihsanularifinm/my-qr)
 > 

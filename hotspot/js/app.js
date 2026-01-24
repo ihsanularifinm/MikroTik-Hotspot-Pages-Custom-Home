@@ -84,6 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
 			'scan_error': 'Invalid QR Code format',
 			'camera_error': 'Camera access failed (HTTPS required)',
 			'camera_permission': 'Please allow camera access',
+			'btn_start_camera': 'Start Camera',
+			'btn_stop_camera': 'Stop Camera',
+			'btn_upload_qr': 'Upload Image',
+			'scan_status_inactive': 'Camera is inactive',
+			'scan_status_stopped': 'Camera stopped',
+			'scan_status_starting': 'Detecting camera...',
+			'redirecting_external': 'Redirecting to External Scanner...',
+			'checking_connection': 'Checking Walled Garden access...',
+			'wg_error': 'External connection failed. Is Walled Garden configured?',
+			'scan_status_ready_external': 'External Scanner Available',
+			'btn_continue_external': 'Open Scanner',
+			'scan_status_use_external': 'Please use the external scanner.',
+			'wg_error_title': 'External connection failed.',
+			'wg_error_desc': 'Is Walled Garden configured?',
+			'wg_error_help': 'Please contact Admin for assistance.',
+			'btn_open_scanner': 'Open Scanner',
+			'status_connection_success': 'Connection Successful',
+			'scan_status_connection_failed': 'Connection Failed',
 
 			// Status page
 			'trial_status': 'Trial User Status',
@@ -167,6 +185,24 @@ document.addEventListener('DOMContentLoaded', () => {
 			'scan_error': 'Format kode QR tidak valid',
 			'camera_error': 'Akses kamera gagal (HTTPS diperlukan)',
 			'camera_permission': 'Izinkan akses kamera',
+			'btn_start_camera': 'Mulai Kamera',
+			'btn_stop_camera': 'Hentikan Kamera',
+			'btn_upload_qr': 'Unggah Gambar',
+			'scan_status_inactive': 'Kamera tidak aktif',
+			'scan_status_stopped': 'Kamera dihentikan',
+			'scan_status_starting': 'Mendeteksi kamera...',
+			'redirecting_external': 'Mengalihkan ke Scanner Eksternal...',
+			'checking_connection': 'Memeriksa akses Walled Garden...',
+			'wg_error': 'Koneksi eksternal gagal. Apakah Walled Garden sudah diatur?',
+			'scan_status_ready_external': 'Pemindai Eksternal Tersedia',
+			'btn_continue_external': 'Buka Pemindai',
+			'scan_status_use_external': 'Silakan gunakan pemindai eksternal.',
+			'wg_error_title': 'Koneksi eksternal gagal.',
+			'wg_error_desc': 'Apakah Walled Garden sudah dikonfigurasi?',
+			'wg_error_help': 'Silakan hubungi Admin untuk bantuan.',
+			'btn_open_scanner': 'Buka Scanner',
+			'status_connection_success': 'Koneksi Berhasil',
+			'scan_status_connection_failed': 'Koneksi Gagal',
 
 			// Status page
 			'trial_status': 'Status Pengguna Uji Coba',
@@ -350,11 +386,34 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (typeof hotspotConfig === 'undefined') return;
 
 		// Automatic Protocol Logic:
-		// Enable QR Code = true  -> Protocol https (Required for camera)
+		// Enable QR Code = true  -> Protocol https (Required for internal camera)
 		// Enable QR Code = false -> Protocol http (Default assumption)
-		// You can still manually override by adding 'loginProtocol' to config if needed, 
-		// but this default behavior covers the standard use case.
-		let protocol = hotspotConfig.enableQRCode ? 'https' : 'http';
+		// However, if we are using the External Scanner (HTTP fallback), we should NOT force HTTPS.
+		
+		let protocol = 'http'; // Default baseline
+
+		// Check current protocol
+		const currentProtocol = window.location.protocol.slice(0, -1); // "http" or "https"
+
+		if (hotspotConfig.enableQRCode) {
+			// If QR is enabled...
+			if (currentProtocol === 'https') {
+				// Already secure, keep it.
+				protocol = 'https';
+			} else {
+				// We are HTTP. 
+				// If mode is 'internal', we ideally need HTTPS.
+				// If mode is 'auto' or 'external', we can stay HTTP (External scanner handles it).
+				if (hotspotConfig.qrMode === 'internal') {
+					protocol = 'https'; // Force upgrade for internal
+				} else {
+					protocol = 'http'; // Stay HTTP for external fallback
+				}
+			}
+		} else {
+			// QR Disabled, match current or default
+			protocol = currentProtocol;
+		}
 
 		// Allow manual override if strictly specified in config
 		if (hotspotConfig.loginProtocol) {
@@ -401,7 +460,69 @@ document.addEventListener('DOMContentLoaded', () => {
 		link.href = logoPath;
 	};
 
+	// ===========================
+	// EXTERNAL SCANNER RETURN LOGIC
+	// ===========================
+	const checkUrlParams = () => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const user = urlParams.get('username') || urlParams.get('user');
+		const pass = urlParams.get('password') || urlParams.get('pass');
+		const autoSubmit = urlParams.get('autosubmit');
+
+		if (user) {
+			console.log('Credentials found in URL:', user);
+			
+			// Determine Mode
+			let mode = 'dual'; // Default
+			if (user === pass || !pass) {
+				mode = 'single';
+			}
+
+			// Fill Forms
+			const userInput = document.getElementById('username-input');
+			const passInput = document.getElementById('password-input-dual'); // Fixed ID
+			const userEqInput = document.getElementById('user-eq-pass-input');
+
+			if (mode === 'dual') {
+				// Switch to dual tab if available
+				// Assuming there's a tab switching mechanism, we might just fill inputs
+				// Ideally triggers the tab click
+				const dualTab = document.querySelector('[data-tab="dual"]');
+				if (dualTab) dualTab.click();
+
+				if (userInput) userInput.value = user;
+				if (passInput) passInput.value = pass;
+			} else {
+				// Switch to single tab
+				const singleTab = document.querySelector('[data-tab="single"]');
+				if (singleTab) singleTab.click();
+
+				if (userEqInput) userEqInput.value = user;
+			}
+
+			// Auto Submit
+			if (autoSubmit === 'true') {
+				// Small delay to ensure UI updates
+				setTimeout(() => {
+					// Universal submit finder
+					const submitBtn = document.querySelector('input[type="submit"]');
+					if (submitBtn) {
+						submitBtn.click();
+					} else if (typeof doLogin === 'function') {
+						doLogin();
+					} else {
+						document.forms[0].submit();
+					}
+				}, 500);
+			}
+			
+			// Clean URL (Optional, but nice)
+			// window.history.replaceState({}, document.title, window.location.pathname);
+		}
+	};
+
 	configureLogo();
 	configureProtocol();
 	applyLanguage();
+	checkUrlParams(); // Run check
 });

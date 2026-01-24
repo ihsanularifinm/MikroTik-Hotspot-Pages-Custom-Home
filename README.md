@@ -25,9 +25,12 @@ Template ini dirancang untuk menggantikan halaman hotspot default MikroTik denga
 - **Multi-Bahasa (English/Indonesia)**: Toggle bahasa dengan tombol EN/ID di pojok kanan atas. Pilihan bahasa disimpan di localStorage.
 - **Sticky Navbar**: Tombol toggle tema dan bahasa berada di navbar sticky yang tidak overlap dengan konten di mobile.
 - **Terjemahan Error Messages**: Pesan error dari MikroTik otomatis diterjemahkan sesuai bahasa yang dipilih.
-- **Login QR Code**: Fitur scan QR Code terintegrasi via kamera browser. Mendukung mode voucer (User=Password) dan member (User & Password).
-- **Konfigurasi Terpusat (`config.js`)**: Atur logo, tema default, bahasa, dan fitur QR cukup dari satu file tanpa perlu mengedit HTML.
-- **Otomatisasi Protokol**: Sistem otomatis berpindah antara HTTP dan HTTPS tergantung apakah fitur QR Code diaktifkan atau tidak.
+- **Dual Mode QR Scanner**: Fitur scan QR Code canggih yang mendukung:
+    - **Mode Internal (HTTPS)**: Menggunakan kamera browser langsung.
+    - **Mode Eksternal (HTTP)**: Solusi "Walled Garden" untuk pengguna yang belum login, menggunakan modal inline tanpa redirect halaman yang mengganggu.
+- **Cek Koneksi WebSocket**: Memastikan status Walled Garden akurat secara real-time (anti-cache).
+- **Konfigurasi Terpusat (`config.js`)**: Atur logo, tema default, bahasa, dan opsi QR Scanner dari satu file.
+- **Otomatisasi Protokol**: Sistem otomatis memilih mode scanner (Internal vs Eksternal) berdasarkan protokol (HTTP vs HTTPS).
 - **Session Cookie Control**: Opsi "Log out & Clear" untuk menghapus session cookie saat logout (fresh login berikutnya).
 - **Default Mode Gelap**: Secara otomatis menampilkan tema gelap untuk pengunjung baru untuk kenyamanan mata.
 - **Tampilkan/Sembunyikan Password**: Memudahkan pengguna saat mengetik password di perangkat mobile.
@@ -43,9 +46,19 @@ Semua pengaturan utama dapat diubah melalui file `hotspot/js/config.js` tanpa pe
 ```javascript
 const hotspotConfig = {
     // Enable/Disable QR Code Login
-    // true  = Tampilkan tombol QR (Wajib HTTPS)
-    // false = Sembunyikan tombol QR (Otomatis HTTP)
+    // true  = Tampilkan tombol QR
+    // false = Sembunyikan tombol QR
     enableQRCode: true,
+
+    // Mode QR Scanner
+    // 'auto'     = Deteksi otomatis (HTTP -> External, HTTPS -> Internal)
+    // 'internal' = Paksa kamera browser (Wajib HTTPS)
+    // 'external' = Paksa scanner eksternal (Wajib Walled Garden)
+    qrMode: 'auto',
+
+    // URL Scanner Eksternal
+    // URL web scanner yang di-whitelist di Walled Garden
+    qrExternalUrl: 'https://my-qr-as1.pages.dev/scanner/',
 
     // Bahasa Default ('en' atau 'id')
     defaultLang: 'en',
@@ -70,7 +83,7 @@ const hotspotConfig = {
 | `alogin.html` | Halaman sukses login (redirect) |
 | `radvert.html` | Halaman advertisement |
 | `js/config.js` | Konfigurasi utama (Logo, QR, Bahasa, Tema) |
-| `js/qr-scanner.js` | Logika pemindai QR Code |
+| `js/qr-scanner.js` | Logika pemindai QR Code & Modal |
 
 ## 🌐 Fitur Multi-Bahasa
 
@@ -100,14 +113,35 @@ Pengguna dapat mengganti bahasa dengan menekan tombol **EN/ID** di pojok kanan a
 4.  Buka **IP** -> **Hotspot** -> tab **Server Profiles**.
 5.  Pilih profil server Anda, dan di kolom **HTML Directory**, pastikan namanya adalah `hotspot`.
 
-## 🔒 Persyaratan HTTPS (Wajib untuk QR Code)
+## � Persyaratan Walled Garden (PENTING untuk HTTP)
 
-Fitur QR Code Scanner menggunakan API kamera browser yang **MEWAJIBKAN** protokol HTTPS agar dapat berjalan.
-Jika Anda tidak mengaktifkan HTTPS di MikroTik Anda, browser akan menolak akses kamera dan fitur QR Code tidak akan berfungsi.
+Agar fitur **QR Scanner Eksternal** dapat berjalan bagi pengguna yang belum login (via HTTP), Anda **WAJIB** menambahkan domain scanner ke dalam Walled Garden MikroTik.
 
-> **PENTING:** Anda harus mengonfigurasi sertifikat SSL/HTTPS di MikroTik Anda.
+**WinBox:**
+1.  Buka **IP** -> **Hotspot** -> **Walled Garden**.
+2.  Klik **+** (Add).
+3.  Set **Dst. Host** menjadi `my-qr-as1.pages.dev` (atau domain scanner Anda).
+4.  Klik **OK**.
+5.  (Opsional) Tambahkan juga `*.github.io` jika ada aset yang diambil dari GitHub.
 
-Silakan ikuti panduan lengkap ini:
+Jika langkah ini tidak dilakukan, scanner akan menampilkan pesan error **"Connection Failed"** dengan ikon "Sad File".
+
+> [!IMPORTANT]
+> **Catatan Penting untuk Custom Scanner**
+> Default `qrExternalUrl` menggunakan scanner milik proyek ini (`my-qr-as1.pages.dev`) yang sudah terintegrasi dengan WebSocket Check.
+>
+> 🔗 **Source Code Scanner & Generator:** [https://github.com/ihsanularifinm/my-qr](https://github.com/ihsanularifinm/my-qr)
+> 
+> Jika Anda mengganti URL tersebut dengan **domain scanner Anda sendiri**, pastikan scanner Anda **WAJIB** memiliki implementasi WebSocket yang sesuai untuk merespon pengecekan koneksi (`/ws` endpoint).
+> Jika scanner Anda hanya file HTML statis biasa tanpa WebSocket, logika pengecekan koneksi **tidak akan akurat**. Sistem mungkin mendeteksi "Sukses" palsu (False Positive) akibat cache browser/DNS, padahal akses Walled Garden sebenarnya terputus/diblokir.
+
+## 🔒 Persyaratan HTTPS (Opsional untuk Mode Internal)
+
+Jika Anda ingin menggunakan **Mode Internal** (kamera langsung di browser tanpa perantara), Anda **WAJIB** mengaktifkan HTTPS di MikroTik.
+
+> **CATATAN:** Dengan sistem "Dual Mode" baru ini, HTTPS tidak lagi wajib mutlak. Jika HTTPS tidak tersedia, sistem akan otomatis beralih ke Mode Eksternal yang bekerja di HTTP (asalkan Walled Garden dikonfigurasi).
+
+Namun jika Anda tetap ingin mengaktifkan HTTPS, silakan ikuti panduan:
 👉 **[BACA PANDUAN LENGKAP: HTTPS-SSL_SETUP.md](HTTPS-SSL_SETUP.md)**
 
 Setelah HTTPS aktif, fitur QR Code akan berjalan lancar karena sistem ini sudah otomatis mendeteksi dan mengalihkan ke protokol yang sesuai.

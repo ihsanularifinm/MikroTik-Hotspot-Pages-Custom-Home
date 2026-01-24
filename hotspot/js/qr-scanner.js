@@ -8,19 +8,22 @@ let html5QrcodeScanner = null;
 let isScanning = false;
 
 const placeholderHTML = `
-<div class="text-gray-400 dark:text-gray-500 flex flex-col items-center animate-pulse">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-20 w-20 opacity-50">
+<div class="text-gray-400 dark:text-gray-600 flex flex-col items-center animate-pulse">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-32 w-32 opacity-50">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
     </svg>
 </div>
 `;
 
-function showPlaceholder() {
+function showPlaceholder(force = false) {
     const container = document.getElementById('qr-scanner-container');
-    // Ensure container exists and does NOT contain video (active scanner)
-    if (container && !container.querySelector('video')) {
-        container.innerHTML = placeholderHTML;
+    // Ensure container exists. If force is true, functionality to overwrite video/canvas.
+    // If not force, only show if no video active.
+    if (container) {
+        if (force || !container.querySelector('video')) {
+            container.innerHTML = placeholderHTML;
+        }
     }
 }
 
@@ -117,6 +120,8 @@ function initQRControls() {
                 // Restore status to Inactive (User must manually restart camera if desired)
                 setTimeout(() => {
                     updateStatus(getTranslation('scan_status_inactive') || 'Camera is inactive', 'text-gray-500 animate-pulse');
+                    // Reset View to Placeholder (Force clear preview)
+                    showPlaceholder(true);
                 }, 3000);
             });
         };
@@ -173,9 +178,9 @@ function startQRScanner() {
                             </svg>
                         </button>
                     </div>
-                    <div id="qr-scanner-container" class="w-full aspect-square bg-gray-100 dark:bg-gray-700 rounded-md overflow-hidden flex items-center justify-center relative">
-                        <div class="text-gray-400 dark:text-gray-500 flex flex-col items-center animate-pulse">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-20 w-20 opacity-50">
+                    <div id="qr-scanner-container" class="w-full aspect-square bg-gray-100 dark:bg-gray-900/50 rounded-md overflow-hidden flex items-center justify-center relative border-2 border-dashed border-gray-300 dark:border-gray-600">
+                        <div class="text-gray-400 dark:text-gray-600 flex flex-col items-center animate-pulse">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-32 w-32 opacity-50">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 3.75 9.375v-4.5ZM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 0 1-1.125-1.125v-4.5ZM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0 1 13.5 9.375v-4.5Z" />
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75ZM6.75 16.5h.75v.75h-.75v-.75ZM16.5 6.75h.75v.75h-.75v-.75ZM13.5 13.5h.75v.75h-.75v-.75ZM13.5 19.5h.75v.75h-.75v-.75ZM19.5 13.5h.75v.75h-.75v-.75ZM19.5 19.5h.75v.75h-.75v-.75ZM16.5 16.5h.75v.75h-.75v-.75Z" />
                             </svg>
@@ -189,11 +194,11 @@ function startQRScanner() {
                             </svg>
                             <span id="txt-toggle-camera" data-i18n="btn_start_camera">Start Camera</span>
                         </button>
-                        <button type="button" id="btn-upload-qr" class="w-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-md focus:outline-none flex items-center justify-center gap-2 cursor-pointer">
+                        <button type="button" id="btn-upload-qr" class="w-full bg-gray-200 dark:bg-gray-700/50 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-xl transition-all duration-200 border border-gray-400 dark:border-gray-600 border-dashed hover:border-gray-500 dark:hover:border-gray-500 flex items-center justify-center gap-2 cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                             </svg>
-                            <span data-i18n="btn_upload_qr">Upload Image</span>
+                            <span data-i18n="btn_upload_qr">Scan Image File</span>
                         </button>
                         <input type="file" id="inp-file-qr" accept="image/*" class="hidden" />
                     </div>
@@ -208,10 +213,11 @@ function startQRScanner() {
         if (closeBtn) {
             closeBtn.addEventListener('click', () => stopQRScanner(true));
         }
-        // Apply i18n if available
-        if (typeof applyTranslations === 'function' && typeof getCurrentLang === 'function') {
-            applyTranslations(getCurrentLang());
-        }
+    }
+    
+    // Apply i18n if available (Ensure text is updated even if modal was static)
+    if (typeof applyTranslations === 'function' && typeof getCurrentLang === 'function') {
+        applyTranslations(getCurrentLang());
     }
     
     // Initialize controls if needed
